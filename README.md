@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/go-shana/core.svg)](https://pkg.go.dev/github.com/go-shana/core)
 
-**Shana is under active development and in a very early stage (in POC phase). Don't use it in nay production environment.**
+**Shana is under active development and in a very early stage (in POC phase). Don't use it in any production environment.**
 
 Shana is a next generation cloud native RPC framework. It is designed to be a Go framework plus set of tool chains to make cloud native applications development much easier.
 
