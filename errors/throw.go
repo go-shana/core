@@ -1,5 +1,7 @@
 package errors
 
+import "fmt"
+
 // Throw joins all errs to one and panics with it.
 //
 // The first element of errs is the key error.
@@ -22,6 +24,11 @@ func Throw(key error, errs ...error) {
 	allErrors = append(allErrors, key)
 	allErrors = append(allErrors, errs...)
 	panic(Join(allErrors...))
+}
+
+// Throwf uses fmt.Errorf to format the error message and panics with it.
+func Throwf(format string, args ...interface{}) {
+	Throw(fmt.Errorf(format, args...))
 }
 
 func Rethrow(err error) {

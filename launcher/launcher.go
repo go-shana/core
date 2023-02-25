@@ -2,6 +2,7 @@ package launcher
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"sync/atomic"
@@ -18,6 +19,13 @@ import (
 func Launch(createServer func() rpc.Server) (err error) {
 	checkLaunched()
 
+	defer func() {
+		if err != nil {
+			// TODO: use log to instead of fmt.
+			fmt.Fprintf(os.Stderr, "launcher: fail to launch the service [err=%v]\n", err)
+			os.Exit(1)
+		}
+	}()
 	defer errors.Handle(&err)
 
 	// Create context and set necessary information.
@@ -28,9 +36,12 @@ func Launch(createServer func() rpc.Server) (err error) {
 
 	// Load configuration.
 	conf := config.New()
-	errors.Check(conf.Load(ctx, cli.MainConfig))
 
-	if cli.ExtConfig != "" {
+	if isFileExists(cli.MainConfig) {
+		errors.Check(conf.Load(ctx, cli.MainConfig))
+	}
+
+	if cli.ExtConfig != "" && isFileExists(cli.ExtConfig) {
 		errors.Check(conf.Load(ctx, cli.ExtConfig))
 	}
 
@@ -68,6 +79,14 @@ func checkLaunched() {
 	}
 
 	launched.Store(true)
+}
+
+func isFileExists(filename string) bool {
+	if info, err := os.Stat(filename); err != nil || info.IsDir() {
+		return false
+	}
+
+	return true
 }
 
 func startServer(ctx context.Context, server rpc.Server) (err error) {

@@ -42,8 +42,7 @@ func (r *registry) Decode(ctx context.Context, d data.Data) (err error) {
 	defer errors.Handle(&err)
 
 	dec := &data.Decoder{
-		TagName:       TagName,
-		NameConverter: data.Uncapitalize,
+		TagName: TagName,
 	}
 
 	for _, entry := range r.entries {

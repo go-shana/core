@@ -3,6 +3,8 @@ package httpjson
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/go-shana/core/rpc"
@@ -19,10 +21,11 @@ var _ rpc.Server = new(Server)
 // NewServer creates a new HTTP JSON server.
 func NewServer(config *Config) *Server {
 	router := NewRouter(config)
+	addr := fmt.Sprintf("%v:%v", config.IP, config.Port)
 	return &Server{
 		config: config,
 		server: &http.Server{
-			Addr:    config.Addr,
+			Addr:    addr,
 			Handler: router,
 		},
 	}
@@ -30,7 +33,16 @@ func NewServer(config *Config) *Server {
 
 // Serve starts the server.
 func (s *Server) Serve(ctx context.Context) error {
-	return s.server.ListenAndServe()
+	// TODO: use logger instead of fmt.
+	fmt.Printf("Server is starting at address %v\n", s.server.Addr)
+
+	err := s.server.ListenAndServe()
+
+	if errors.Is(err, http.ErrServerClosed) {
+		return nil
+	}
+
+	return err
 }
 
 // Shutdown stops the server.

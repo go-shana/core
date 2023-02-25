@@ -11,6 +11,7 @@ import (
 	"github.com/go-shana/core/data"
 	"github.com/go-shana/core/errors"
 	"github.com/go-shana/core/initer"
+	"github.com/go-shana/core/internal/global"
 	"github.com/go-shana/core/internal/rpc"
 	"github.com/go-shana/core/validator"
 )
@@ -163,7 +164,7 @@ func parseHandlerFunc(config *Config, handler *rpc.Handler) http.HandlerFunc {
 	fnType := fn.Type()
 	reqType := fnType.In(1).Elem()
 	respType := fnType.Out(0).Elem()
-	debug := config.Debug
+	debug := global.Debug()
 
 	sonic.Pretouch(reqType)
 	sonic.Pretouch(respType)
