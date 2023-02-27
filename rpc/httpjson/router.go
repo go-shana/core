@@ -3,6 +3,7 @@ package httpjson
 import (
 	"fmt"
 	"net/http"
+	"sort"
 
 	"github.com/go-shana/core/internal/rpc"
 )
@@ -52,9 +53,17 @@ func printRouteTree(root *routeTree, parent string) {
 		uris = append(uris, []string{parent + "/" + path, handler.handler.FuncName})
 	}
 
+	lines := make([]string, 0, len(uris))
+
 	for _, uri := range uris {
+		lines = append(lines, fmt.Sprintf("GET|POST\t%-[1]*[2]s => %[3]s", maxLen+len(parent)+1, uri[0], uri[1]))
+	}
+
+	sort.Strings(lines)
+
+	for _, line := range lines {
 		// TODO: use logger instead of fmt.
-		fmt.Printf("%[1]*[2]s => %[3]s\n", maxLen, uri[0], uri[1])
+		fmt.Println(line)
 	}
 
 	for path, tree := range root.subRoutes {

@@ -4,7 +4,7 @@ import "github.com/go-shana/core/config"
 
 // Config is the configuration for global microservice.
 type Config struct {
-	Debug bool
+	Debug bool `shana:"debug"`
 }
 
 var (
